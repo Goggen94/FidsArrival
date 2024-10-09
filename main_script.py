@@ -26,8 +26,8 @@ def format_time(time_str):
     except Exception as e:
         return "", None  # Return an empty string if there's an issue
 
-# Create a Flightradar24 URL using aircraft_reg for OG flights, and flight number -1 for other flights
-def generate_flightradar_link(flight_number, aircraft_reg):
+# Create a Flightradar24 URL using flight number -1
+def generate_flightradar_link(flight_number):
     try:
         flight_num = int(flight_number[2:]) - 1  # Subtract 1 from the flight number
         return f"https://www.flightradar24.com/{flight_number[:2]}{flight_num}"
@@ -39,7 +39,7 @@ if response.status_code == 200:
     data = response.json()  # Parse the JSON data
     previous_date = None  # Track the date to insert the yellow line when the day changes
 
-    # Generate HTML file with arriving flights handled by APA
+    # Generate HTML file with arriving flights
     html_output = """
     <html>
     <head>
@@ -114,7 +114,7 @@ if response.status_code == 200:
             formatted_sched_time, sched_date = format_time(sched_time)
 
             # Generate Flightradar link for flights using flight number -1
-            flightradar_link = generate_flightradar_link(flight_number, aircraft_reg)
+            flightradar_link = generate_flightradar_link(flight_number)
 
             row_click = f"onclick=\"showPopup('{flight_number}', '{flightradar_link}')\""
 
