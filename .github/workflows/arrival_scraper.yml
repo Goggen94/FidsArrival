@@ -7,43 +7,29 @@ on:
 
 jobs:
   run-scraper:
-    runs-on: self-hosted  # This uses your self-hosted runner
+    runs-on: self-hosted  # Use your self-hosted runner
 
     steps:
       # Step 1: Check out the repository
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.x'
+      # Step 2: Check Python version (Optional)
+      - name: Check Python version
+        run: python --version  # Check the default Python version
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      # Step 4: Run the Python scraper script
+      # Step 3: Run the scraper script (if it's in Python)
       - name: Run scraper script
         run: |
-          python main_script.py
+          python main_script.py  # Use the system's default Python if installed
 
-      # Step 5: Debug step if the script fails
-      - name: Debug logs
-        if: failure()  # Runs this step if the previous step fails
-        run: |
-          echo "The scraper failed. Check the logs for more details."
-
-      # Step 6: Commit and push changes to the main branch
+      # Step 4: Commit and push changes
       - name: Commit and push changes to main
         env:
-          GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}
+          GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}  # Use your secret token here
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add scraper/output/index.html
+          git add scraper/output/index.html  # Ensure this path is correct for your generated HTML
           git commit -m "Update arrivals HTML file"
           git push https://x-access-token:${{ secrets.Fids_Arrival }}@github.com/${{ github.repository }} HEAD:main
