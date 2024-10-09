@@ -37,12 +37,12 @@ jobs:
 
       # Feilsøking: Sjekk om TOKEN er riktig lastet inn
       - name: Verify TOKEN
-        run: echo "Token: ${{ secrets.FidsArrival }}"
+        run: echo "Token: ${{ secrets.FIDSARRIVAL }}"
 
       # Push endringer (f.eks. ny HTML-fil) til GitHub
       - name: Commit and push changes
         env:
-          TOKEN: ${{ secrets.FidsArrival }}
+          TOKEN: ${{ secrets.FIDSARRIVAL }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
