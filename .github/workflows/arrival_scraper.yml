@@ -31,14 +31,6 @@ jobs:
         run: |
           python main_script.py
 
-      # Sjekk hvilken branch som blir brukt (feilsøking)
-      - name: Check branch
-        run: echo "Branch: ${{ github.ref }}"
-
-      # Feilsøking: Sjekk om TOKEN er riktig lastet inn
-      - name: Verify TOKEN
-        run: echo "Token: ${{ secrets.FIDSARRIVAL }}"
-
       # Push endringer (f.eks. ny HTML-fil) til GitHub
       - name: Commit and push changes
         env:
