@@ -14,28 +14,28 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Step 2: Verify Python is installed
-      - name: Check Python version
-        run: python --version  # This will verify Python is installed
-
-      # Step 3: Install dependencies
-      - name: Install Python dependencies
+      # Step 2: Set up Python (Ensure Python is installed)
+      - name: Set up Python
         run: |
-          python -m pip install --upgrade pip  # Upgrade pip
-          pip install -r requirements.txt  # Install dependencies (requests)
+          python --version  # Check the Python version
+          python3 -m venv myenv  # Create a virtual environment
+          source myenv/bin/activate  # Activate the virtual environment
+          python -m pip install --upgrade pip  # Upgrade pip in the virtual environment
+          pip install -r requirements.txt  # Install dependencies from requirements.txt
 
-      # Step 4: Run the Python scraper script
+      # Step 3: Run the scraper script inside the virtual environment
       - name: Run scraper script
         run: |
-          python main_script.py  # Ensure this is the correct script path
+          source myenv/bin/activate  # Activate the virtual environment
+          python main_script.py  # Run your Python scraper
 
-      # Step 5: Commit and push changes to main branch
+      # Step 4: Commit and push changes to main branch
       - name: Commit and push changes to main
         env:
-          GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}  # Use your secret token here
+          GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add scraper/output/index.html  # Ensure this path is correct for your generated HTML
+          git add scraper/output/index.html
           git commit -m "Update arrivals HTML file"
           git push https://x-access-token:${{ secrets.Fids_Arrival }}@github.com/${{ github.repository }} HEAD:main
