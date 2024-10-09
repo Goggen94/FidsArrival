@@ -2,7 +2,7 @@ name: Arrival Scraper
 
 on:
   schedule:
-    - cron: "*/1 * * * *"  # Runs every minute
+    - cron: "*/3 * * * *"  # Runs every minute
   workflow_dispatch:  # Allows manual triggering of workflow
 
 jobs:
