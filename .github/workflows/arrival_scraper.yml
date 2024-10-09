@@ -2,7 +2,6 @@ name: Arrival Scraper
 
 on:
   schedule:
-    # Dette oppsettet kjører skriptet hver time. Du kan justere cron-tidene etter behov.
     - cron: "0 * * * *"  # Kjør hver time
   workflow_dispatch:  # Tillater manuell trigging av workflow
 
@@ -19,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.x'  # Sett versjon etter ditt behov
+          python-version: '3.x'
 
       # Installer nødvendige pakker
       - name: Install dependencies
