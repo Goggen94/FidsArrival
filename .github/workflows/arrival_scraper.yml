@@ -31,6 +31,15 @@ jobs:
         run: |
           python main_script.py
 
+      # Pull from gh-pages to avoid conflicts
+      - name: Pull changes from gh-pages
+        env:
+          TOKEN: ${{ secrets.Fids_Arrival }}
+        run: |
+          git fetch origin gh-pages
+          git checkout gh-pages
+          git pull origin gh-pages
+
       # Push endringer til gh-pages
       - name: Commit and push changes to gh-pages
         env:
