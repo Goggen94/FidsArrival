@@ -2,7 +2,7 @@ name: Arrival Scraper
 
 on:
   schedule:
-    - cron: "0 * * * *"  # Kjør hver time
+    - cron: "*/1 * * * *"  # Kjør hvert minutt
   workflow_dispatch:  # Tillater manuell trigging av workflow
 
 jobs:
@@ -34,10 +34,10 @@ jobs:
       # Push endringer til main (uten gh-pages)
       - name: Commit and push changes to main
         env:
-          TOKEN: ${{ secrets.Fids_Arrival }}
+          GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add scraper/output/index.html
           git commit -m "Update arrivals HTML file"
           git push https://x-access-token:${{ secrets.Fids_Arrival }}@github.com/${{ github.repository }} HEAD:main
