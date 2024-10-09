@@ -36,7 +36,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git pull origin main  # Pull the latest changes from remote
+          git pull origin main --rebase  # Pull the latest changes from remote and rebase to avoid merge conflicts
           git add scraper/output/index.html  # Add changes
           git commit -m "Update arrivals HTML file"
           git push https://x-access-token:${{ secrets.Fids_Arrival }}@github.com/${{ github.repository }} HEAD:main
