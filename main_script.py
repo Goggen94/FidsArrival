@@ -35,7 +35,7 @@ def generate_flightradar_link(flight_number):
 
 # Function to get the current time for the last updated time
 def get_last_updated_time():
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.now().strftime("%H:%M")
 
 # Check if the request was successful
 if response.status_code == 200:
