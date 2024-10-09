@@ -14,16 +14,24 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Step 2: Check Python version (Optional)
-      - name: Check Python version
-        run: python --version  # Check the default Python version
+      # Step 2: Set up Python with a specific version
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'  # Specify a valid version like 3.8, 3.9, or 3.10
 
-      # Step 3: Run the scraper script (if it's in Python)
+      # Step 3: Install dependencies
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip  # Upgrade pip
+          pip install -r requirements.txt  # Install dependencies from requirements.txt
+
+      # Step 4: Run the Python scraper script
       - name: Run scraper script
         run: |
-          python main_script.py  # Use the system's default Python if installed
+          python main_script.py  # Ensure this is the correct script path
 
-      # Step 4: Commit and push changes
+      # Step 5: Commit and push changes to main branch
       - name: Commit and push changes to main
         env:
           GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}  # Use your secret token here
