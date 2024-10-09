@@ -2,36 +2,42 @@ name: Arrival Scraper
 
 on:
   schedule:
-    - cron: "*/1 * * * *"  # Kjør hvert minutt
-  workflow_dispatch:  # Tillater manuell trigging av workflow
+    - cron: "*/1 * * * *"  # Runs every minute
+  workflow_dispatch:  # Allows manual triggering of workflow
 
 jobs:
   run-scraper:
-    runs-on: self-hosted  # This sends jobs to your self-hosted runner
+    runs-on: self-hosted  # This uses your self-hosted runner
 
     steps:
-      # Sjekk ut koden fra repository
+      # Step 1: Check out the repository
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Sett opp Python
+      # Step 2: Set up Python
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
           python-version: '3.x'
 
-      # Installer nødvendige pakker
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Kjør Python-skriptet for å hente ankomster
+      # Step 4: Run the Python scraper script
       - name: Run scraper script
         run: |
           python main_script.py
 
-      # Push endringer til main (uten gh-pages)
+      # Step 5: Debug step if the script fails
+      - name: Debug logs
+        if: failure()  # Runs this step if the previous step fails
+        run: |
+          echo "The scraper failed. Check the logs for more details."
+
+      # Step 6: Commit and push changes to the main branch
       - name: Commit and push changes to main
         env:
           GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}
