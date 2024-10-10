@@ -14,12 +14,12 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python and create a virtual environment
-      - name: Set up Python
+      # Step 2: Set up Python environment
+      - name: Set up Python and install dependencies
         run: |
-          python --version  # Check Python version
           python3 -m venv myenv  # Create a virtual environment
           source myenv/bin/activate  # Activate the virtual environment
+          python --version  # Check Python version
           pip install --upgrade pip  # Upgrade pip
           pip install -r requirements.txt  # Install dependencies
 
@@ -36,9 +36,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git stash  # Stash any unstaged changes
           git pull origin main --rebase  # Pull the latest changes and rebase
-          git stash pop || true  # Reapply the stashed changes (ignore error if stash was empty)
-          git add scraper/output/index.html  # Add changes
-          git commit -m "Update arrivals HTML file"
+          git add scraper/output/index.html  # Add the updated HTML file
+          git commit -m "Update arrivals HTML file" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.Fids_Arrival }}@github.com/${{ github.repository }} HEAD:main
