@@ -29,14 +29,16 @@ jobs:
           source myenv/bin/activate  # Activate the virtual environment
           python main_script.py  # Run your Python scraper
 
-      # Step 4: Commit and push changes to main branch
+      # Step 4: Commit and push changes to the main branch
       - name: Commit and push changes to main
         env:
           GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git stash  # Stash any unstaged changes
           git pull origin main --rebase  # Pull the latest changes and rebase
+          git stash pop || true  # Reapply the stashed changes (ignore error if stash was empty)
           git add scraper/output/index.html  # Add the updated HTML file
           git commit -m "Update arrivals HTML file" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.Fids_Arrival }}@github.com/${{ github.repository }} HEAD:main
