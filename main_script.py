@@ -1,10 +1,10 @@
 import requests
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # Function to get the current time and the time 24 hours ahead
 def get_time_range():
-    now = datetime.utcnow()  # Get the current UTC time
+    now = datetime.now(timezone.utc)  # Get the current UTC time with timezone-awareness
     date_from = now.strftime("%Y-%m-%dT%H:%M:%SZ")  # Format start time as "YYYY-MM-DDTHH:MM:SSZ"
     date_to = (now + timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")  # 24 hours ahead
     return date_from, date_to
@@ -102,8 +102,8 @@ if response.status_code == 200:
                 document.getElementById("popup").style.display = "block";
                 document.getElementById("flight-info").innerHTML = `
                     <p>Click for radar:</p>
-                    <a href="${{flightradarLink}}" target="_blank">Flight: ${flight}</a>
-                    <p>${{countdownText}}</p>`;
+                    <a href="{flightradarLink}" target="_blank">Flight: {flight}</a>
+                    <p>{countdownText}</p>`;
             }}
 
             function closePopup() {{
