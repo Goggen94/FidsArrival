@@ -13,7 +13,7 @@ def get_time_range():
 date_from, date_to = get_time_range()
 
 # URL to the flight data API for arrivals
-url = f"https://fids.kefairport.is/api/flights?dateFrom={date_from}&dateTo={date_to}&flightType=arrival"
+url = f"https://fids.kefairport.is/api/flights?dateFrom={date_from}&dateTo={date_to}"
 
 # Send the request to get the arrival data
 response = requests.get(url)
