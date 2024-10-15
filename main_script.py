@@ -82,7 +82,10 @@ if response.status_code == 200:
                 font-size: 14px;
                 padding-right: 20px;
             }}
-            @media only screen and (max-width: 600px) {{ #popup {{ width: 75%;  /* Adjusted for mobile */ padding: 8px; }} }}
+            @media only screen and (max-width: 600px) {{ 
+                body {{ font-size: 18px; }}
+                #popup {{ width: 90%; padding: 10px; }} /* Adjusted for mobile */
+            }}
         </style>
         <script>
             function showPopup(flight, flightradarLink, eta, fallbackTime) {{
