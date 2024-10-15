@@ -102,8 +102,8 @@ if response.status_code == 200:
                 document.getElementById("popup").style.display = "block";
                 document.getElementById("flight-info").innerHTML = `
                     <p>Click for radar:</p>
-                    <a href="{flightradarLink}" target="_blank">Flight: {flight}</a>
-                    <p>{countdownText}</p>`;
+                    <a href="` + flightradarLink + `" target="_blank">Flight: ` + flight + `</a>
+                    <p>` + countdownText + `</p>`;
             }}
 
             function closePopup() {{
