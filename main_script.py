@@ -90,7 +90,17 @@ if response.status_code == 200:
         <script>
             function showPopup(flight, flightradarLink, eta, fallbackTime) {{
                 const now = new Date().getTime();
-                const etaTime = eta ? new Date(eta).getTime() : new Date(fallbackTime).getTime();
+                let etaTime;
+
+                if (eta) {{
+                    etaTime = new Date(eta).getTime();
+                }} else if (fallbackTime) {{
+                    etaTime = new Date(fallbackTime).getTime();
+                }} else {{
+                    document.getElementById("flight-info").innerHTML = "<p>Time not available</p>";
+                    return;
+                }}
+
                 const timeRemaining = etaTime - now;
 
                 const minutesRemaining = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
