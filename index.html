@@ -1,1 +1,372 @@
 
+    <html>
+    <head>
+        <title>KEF Airport Arrivals</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="refresh" content="65">  <!-- Refresh every 65 seconds -->
+        <style>
+            body { background-color: #2c2c2c; color: white; font-family: Arial, sans-serif; font-size: 16px; }
+            h2 { text-align: center; color: #f4d03f; font-size: 24px; padding: 10px; border-radius: 8px; background-color: #444444; margin-bottom: 15px; }
+            table { width: 100%; margin: 15px auto; border-collapse: collapse; background-color: #333333; }
+            th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #666666; font-weight: bold; }
+            th { background-color: #f4d03f; color: #333; font-weight: bold; border-radius: 5px; font-size: 14px; }
+            td { font-size: 14px; }
+            tr:nth-child(even) { background-color: #2c2c2c; }
+            tr:hover { background-color: #444444; }
+            #next-day { background-color: #f4d03f; color: black; font-weight: bold; text-align: center; padding: 8px; }
+            #popup { display: none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background-color: #444; padding: 8px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); z-index: 999; color: white; font-size: 16px; width: 40%;  /* Reduced size */ }
+            #popup h3 { color: #f4d03f; font-size: 16px; margin-bottom: 5px; }
+            #popup p { margin: 2px 0; font-size: 16px; display: flex; justify-content: space-between;  /* Vertical alignment */ }
+            #close-popup { cursor: pointer; color: #f4d03f; margin-top: 8px; text-align: center; display: block; }
+            a { color: #f4d03f;  /* Set link color to yellow */ text-decoration: none; }
+            a:hover { text-decoration: underline; }
+            #departures-btn {
+                margin-left: 20px;
+                padding: 10px 20px;
+                background-color: #f4d03f;
+                color: black;
+                font-weight: bold;
+                border-radius: 8px;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            #last-updated {
+                text-align: right;
+                color: #f4d03f;
+                font-size: 14px;
+                padding-right: 20px;
+            }
+            @media only screen and (max-width: 600px) { #popup { width: 75%;  /* Adjusted for mobile */ padding: 8px; } }
+        </style>
+        <script>
+            function showPopup(flight, flightradarLink) {
+                document.getElementById("popup").style.display = "block";
+                document.getElementById("flight-info").innerHTML = '<a href="' + flightradarLink + '" target="_blank">Flight: ' + flight + '</a>';
+            }
+
+            function closePopup() {
+                document.getElementById("popup").style.display = "none";
+            }
+        </script>
+    </head>
+    <body>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>KEF Airport Arrivals</h2>
+            <a href="https://dep.paxnotes.com" id="departures-btn">Departures</a>
+        </div>
+        <div id="last-updated">Last updated: 01:04</div>
+        <table>
+            <tr>
+                <th>Flight</th>
+                <th>A/C Reg</th>
+                <th>Origin</th>
+                <th>STA</th>
+                <th>ETA</th>
+                <th>Status</th>
+                <th>Stand</th>
+                <th>Belt</th>
+                <th>Gate</th>
+            </tr>
+    
+                <tr onclick="showPopup('OG122', 'https://www.flightradar24.com/OG122')">
+                    <td>OG122</td>
+                    <td>TFPLA</td>
+                    <td>New York Stewart</td>
+                    <td>04:50</td>
+                    <td>04:26</td>
+                    <td>DYNAMIC MESSAGING</td>
+                    <td>46R</td>
+                    <td>4</td>
+                    <td>D</td>
+                </tr>
+            
+                <tr onclick="showPopup('OG7202', 'https://www.flightradar24.com/OG7202')">
+                    <td>OG7202</td>
+                    <td>TFPPC</td>
+                    <td>Toronto Hamilton</td>
+                    <td>04:55</td>
+                    <td>04:24</td>
+                    <td>DYNAMIC MESSAGING</td>
+                    <td>8</td>
+                    <td>5</td>
+                    <td>D35</td>
+                </tr>
+            
+                <tr onclick="showPopup('OG102', 'https://www.flightradar24.com/OG102')">
+                    <td>OG102</td>
+                    <td>TFPPB</td>
+                    <td>Baltimore Washington</td>
+                    <td>04:55</td>
+                    <td>04:19</td>
+                    <td>DYNAMIC MESSAGING</td>
+                    <td>5</td>
+                    <td>1</td>
+                    <td>D15</td>
+                </tr>
+            
+                <tr onclick="showPopup('DL236', 'https://www.flightradar24.com/DL236')">
+                    <td>DL236</td>
+                    <td>N821DX</td>
+                    <td>Detroit</td>
+                    <td>06:20</td>
+                    <td>06:17</td>
+                    <td>DYNAMIC MESSAGING</td>
+                    <td>72</td>
+                    <td>1</td>
+                    <td>D</td>
+                </tr>
+            
+                <tr onclick="showPopup('D03998', 'https://www.flightradar24.com/D03998')">
+                    <td>D03998</td>
+                    <td></td>
+                    <td>East Midlands</td>
+                    <td>07:15</td>
+                    <td></td>
+                    <td></td>
+                    <td>55</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            
+                <tr onclick="showPopup('ED6810', 'https://www.flightradar24.com/ED6810')">
+                    <td>ED6810</td>
+                    <td>OMEDH</td>
+                    <td>Billund</td>
+                    <td>07:20</td>
+                    <td></td>
+                    <td></td>
+                    <td>57</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            
+                <tr onclick="showPopup('EJU4895', 'https://www.flightradar24.com/EJU4895')">
+                    <td>EJU4895</td>
+                    <td>OEIVA</td>
+                    <td>Paris Orly</td>
+                    <td>08:25</td>
+                    <td></td>
+                    <td></td>
+                    <td>14</td>
+                    <td>3</td>
+                    <td>C32</td>
+                </tr>
+            
+                <tr onclick="showPopup('BA800', 'https://www.flightradar24.com/BA800')">
+                    <td>BA800</td>
+                    <td>GNEOS</td>
+                    <td>London Heathrow</td>
+                    <td>09:20</td>
+                    <td></td>
+                    <td></td>
+                    <td>14</td>
+                    <td>3</td>
+                    <td>D32</td>
+                </tr>
+            
+                <tr onclick="showPopup('DL246', 'https://www.flightradar24.com/DL246')">
+                    <td>DL246</td>
+                    <td>N199DN</td>
+                    <td>New York JFK</td>
+                    <td>09:30</td>
+                    <td></td>
+                    <td></td>
+                    <td>12</td>
+                    <td>4</td>
+                    <td>D34</td>
+                </tr>
+            
+                <tr onclick="showPopup('W46097', 'https://www.flightradar24.com/W46097')">
+                    <td>W46097</td>
+                    <td>9HWAJ</td>
+                    <td>Rome</td>
+                    <td>11:20</td>
+                    <td></td>
+                    <td></td>
+                    <td>5</td>
+                    <td>3</td>
+                    <td>A15</td>
+                </tr>
+            
+                <tr onclick="showPopup('OG591', 'https://www.flightradar24.com/OG591')">
+                    <td>OG591</td>
+                    <td>TFPPD</td>
+                    <td>Athens Eleftherios</td>
+                    <td>13:20</td>
+                    <td></td>
+                    <td></td>
+                    <td>72L</td>
+                    <td>3</td>
+                    <td>C33</td>
+                </tr>
+            
+                <tr onclick="showPopup('OG801', 'https://www.flightradar24.com/OG801')">
+                    <td>OG801</td>
+                    <td>TFPPB</td>
+                    <td>London Stansted</td>
+                    <td>13:45</td>
+                    <td></td>
+                    <td></td>
+                    <td>46R</td>
+                    <td>4</td>
+                    <td>D</td>
+                </tr>
+            
+                <tr onclick="showPopup('OG731', 'https://www.flightradar24.com/OG731')">
+                    <td>OG731</td>
+                    <td>TFPPA</td>
+                    <td>Dusseldorf</td>
+                    <td>13:50</td>
+                    <td></td>
+                    <td></td>
+                    <td>3</td>
+                    <td>5</td>
+                    <td>A13</td>
+                </tr>
+            
+                <tr onclick="showPopup('OG461', 'https://www.flightradar24.com/OG461')">
+                    <td>OG461</td>
+                    <td>TFPLC</td>
+                    <td>Amsterdam</td>
+                    <td>13:50</td>
+                    <td></td>
+                    <td></td>
+                    <td>9</td>
+                    <td>3</td>
+                    <td>C23</td>
+                </tr>
+            
+                <tr onclick="showPopup('OG901', 'https://www.flightradar24.com/OG901')">
+                    <td>OG901</td>
+                    <td>TFPPF</td>
+                    <td>Copenhagen</td>
+                    <td>14:00</td>
+                    <td></td>
+                    <td></td>
+                    <td>75L</td>
+                    <td>3</td>
+                    <td>C31</td>
+                </tr>
+            
+                <tr onclick="showPopup('OG741', 'https://www.flightradar24.com/OG741')">
+                    <td>OG741</td>
+                    <td>TFPPC</td>
+                    <td>Hamburg</td>
+                    <td>14:00</td>
+                    <td></td>
+                    <td></td>
+                    <td>8</td>
+                    <td>4</td>
+                    <td>C35</td>
+                </tr>
+            
+                <tr onclick="showPopup('OG401', 'https://www.flightradar24.com/OG401')">
+                    <td>OG401</td>
+                    <td>TFPPE</td>
+                    <td>Paris CDG</td>
+                    <td>14:05</td>
+                    <td></td>
+                    <td></td>
+                    <td>75R</td>
+                    <td>5</td>
+                    <td>C</td>
+                </tr>
+            
+                <tr onclick="showPopup('EJU3969', 'https://www.flightradar24.com/EJU3969')">
+                    <td>EJU3969</td>
+                    <td>OEISH</td>
+                    <td>Milan</td>
+                    <td>16:55</td>
+                    <td></td>
+                    <td></td>
+                    <td>70L</td>
+                    <td>3</td>
+                    <td>C33</td>
+                </tr>
+            
+                <tr onclick="showPopup('NO2903', 'https://www.flightradar24.com/NO2903')">
+                    <td>NO2903</td>
+                    <td>EIRZE</td>
+                    <td>Alicante</td>
+                    <td>19:20</td>
+                    <td></td>
+                    <td></td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>A13</td>
+                </tr>
+            
+                <tr onclick="showPopup('W61773', 'https://www.flightradar24.com/W61773')">
+                    <td>W61773</td>
+                    <td>LYNVJ</td>
+                    <td>Gdansk</td>
+                    <td>20:05</td>
+                    <td></td>
+                    <td></td>
+                    <td>5</td>
+                    <td>3</td>
+                    <td>A15</td>
+                </tr>
+            
+                <tr onclick="showPopup('OG451', 'https://www.flightradar24.com/OG451')">
+                    <td>OG451</td>
+                    <td>TFPLA</td>
+                    <td>Madeira</td>
+                    <td>20:20</td>
+                    <td></td>
+                    <td></td>
+                    <td>73</td>
+                    <td>4</td>
+                    <td>C31</td>
+                </tr>
+            
+                <tr onclick="showPopup('OG621', 'https://www.flightradar24.com/OG621')">
+                    <td>OG621</td>
+                    <td>TFAEW</td>
+                    <td>Tenerife South</td>
+                    <td>22:15</td>
+                    <td></td>
+                    <td></td>
+                    <td>46R</td>
+                    <td>3</td>
+                    <td>C</td>
+                </tr>
+            
+                <tr onclick="showPopup('W61539', 'https://www.flightradar24.com/W61539')">
+                    <td>W61539</td>
+                    <td></td>
+                    <td>Warsaw</td>
+                    <td>23:05</td>
+                    <td></td>
+                    <td></td>
+                    <td>5</td>
+                    <td>3</td>
+                    <td>A15</td>
+                </tr>
+            
+                <tr id="next-day">
+                    <td colspan="9">Next Day Flights</td>
+                </tr>
+                
+                <tr onclick="showPopup('W42857', 'https://www.flightradar24.com/W42857')">
+                    <td>W42857</td>
+                    <td></td>
+                    <td>Vienna</td>
+                    <td>00:25</td>
+                    <td></td>
+                    <td></td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>A13</td>
+                </tr>
+            
+        </table>
+
+        <div id="popup">
+            <h3>Flight Information</h3>
+            <p id="flight-info">Flight:</p>
+            <p id="close-popup" onclick="closePopup()">Close</p>
+        </div>
+    </body>
+    </html>
+    
