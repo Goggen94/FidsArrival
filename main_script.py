@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 # Function to get the current time and the time 24 hours ahead
 def get_time_range():
-    now = datetime.now(timezone.utc)  # Get the current UTC time with timezone-awareness
+    now = datetime.utcnow()  # Get the current UTC time
     date_from = now.strftime("%Y-%m-%dT%H:%M:%SZ")  # Format start time as "YYYY-MM-DDTHH:MM:SSZ"
     date_to = (now + timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")  # 24 hours ahead
     return date_from, date_to
@@ -16,7 +16,7 @@ date_from, date_to = get_time_range()
 url = f"https://fids.kefairport.is/api/flights?dateFrom={date_from}&dateTo={date_to}"
 
 # Send the request to get the arrival data
-response = requests.get(url)
+response = requests.get(url, verify=False)
 
 # Function to format the time and date into separate columns
 def format_time(time_str):
@@ -49,7 +49,7 @@ if response.status_code == 200:
     <head>
         <title>KEF Airport Arrivals</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="refresh" content="65">  <!-- Refresh every 65 seconds -->
+        <meta http-equiv="refresh" content="60">  <!-- Refresh every minute -->
         <style>
             body {{ background-color: #2c2c2c; color: white; font-family: Arial, sans-serif; font-size: 16px; }}
             h2 {{ text-align: center; color: #f4d03f; font-size: 24px; padding: 10px; border-radius: 8px; background-color: #444444; margin-bottom: 15px; }}
@@ -60,11 +60,11 @@ if response.status_code == 200:
             tr:nth-child(even) {{ background-color: #2c2c2c; }}
             tr:hover {{ background-color: #444444; }}
             #next-day {{ background-color: #f4d03f; color: black; font-weight: bold; text-align: center; padding: 8px; }}
-            #popup {{ display: none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background-color: #444; padding: 8px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); z-index: 999; color: white; font-size: 16px; width: 40%;  /* Reduced size */ }}
+            #popup {{ display: none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background-color: #444; padding: 8px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); z-index: 999; color: white; font-size: 16px; width: 40%;  }}
             #popup h3 {{ color: #f4d03f; font-size: 16px; margin-bottom: 5px; }}
-            #popup p {{ margin: 2px 0; font-size: 16px; display: flex; justify-content: space-between;  /* Vertical alignment */ }}
+            #popup p {{ margin: 2px 0; font-size: 16px; display: flex; justify-content: space-between; }}
             #close-popup {{ cursor: pointer; color: #f4d03f; margin-top: 8px; text-align: center; display: block; }}
-            a {{ color: #f4d03f;  /* Set link color to yellow */ text-decoration: none; }}
+            a {{ color: #f4d03f;  text-decoration: none; }}
             a:hover {{ text-decoration: underline; }}
             #departures-btn {{
                 margin-left: 20px;
@@ -84,38 +84,14 @@ if response.status_code == 200:
             }}
             @media only screen and (max-width: 600px) {{ 
                 body {{ font-size: 18px; }}
-                #popup {{ width: 90%; padding: 10px; }} /* Adjusted for mobile */
+                #popup {{ width: 90%; padding: 10px; }}
             }}
         </style>
         <script>
-            function showPopup(flight, flightradarLink, eta, fallbackTime) {{
-                const now = new Date().getTime();
-                let etaTime;
-
-                if (eta) {{
-                    etaTime = new Date(eta).getTime();
-                }} else if (fallbackTime) {{
-                    etaTime = new Date(fallbackTime).getTime();
-                }} else {{
-                    document.getElementById("flight-info").innerHTML = "<p>Time not available</p>";
-                    return;
-                }}
-
-                const timeRemaining = etaTime - now;
-
-                const minutesRemaining = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-                const hoursRemaining = Math.floor(timeRemaining / (1000 * 60 * 60));
-
-                let countdownText = hoursRemaining + " hours " + minutesRemaining + " minutes until landing";
-
-                if (timeRemaining < 0) {{
-                    countdownText = "Flight has landed";
-                }}
-
+            function showPopup(flight, flightradarLink) {{
                 document.getElementById("popup").style.display = "block";
                 document.getElementById("flight-info").innerHTML = `
-                    <a href="` + flightradarLink + `" target="_blank">Radar -> Flight: ` + flight + `</a>
-                    <p>` + countdownText + `</p>`;
+                    <a href="` + flightradarLink + `" target="_blank">Radar -> Flight: ` + flight + `</a>`;
             }}
 
             function closePopup() {{
@@ -168,7 +144,7 @@ if response.status_code == 200:
             # Generate Flightradar link for flights using the same flight number
             flightradar_link = generate_flightradar_link(flight_number)
 
-            row_click = f"onclick=\"showPopup('{flight_number}', '{flightradar_link}', '{eta_datetime}', '{sched_datetime}')\""
+            row_click = f"onclick=\"showPopup('{flight_number}', '{flightradar_link}')\""
 
             # Insert yellow line when the day changes
             if previous_date and sched_datetime.date() != previous_date:
@@ -206,9 +182,14 @@ if response.status_code == 200:
     </html>
     """
 
-    # Save the HTML file to the output directory
-    os.makedirs("scraper/output", exist_ok=True)
-    with open("scraper/output/index.html", "w", encoding="utf-8") as file:
+    # Save the HTML file to the correct path based on the environment
+    if os.getenv('GITHUB_ACTIONS'):
+        output_path = "scraper/output/index.html"  # For GitHub Actions
+    else:
+        output_path = "/var/www/html/index.html"  # For the VM
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as file:
         file.write(html_output)
 
     print("HTML file has been generated with arriving flights handled by APA.")
