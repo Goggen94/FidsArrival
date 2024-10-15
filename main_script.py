@@ -85,9 +85,25 @@ if response.status_code == 200:
             @media only screen and (max-width: 600px) {{ #popup {{ width: 75%;  /* Adjusted for mobile */ padding: 8px; }} }}
         </style>
         <script>
-            function showPopup(flight, flightradarLink) {{
+            function showPopup(flight, flightradarLink, eta) {{
+                const now = new Date().getTime();
+                const etaTime = new Date(eta).getTime();
+                const timeRemaining = etaTime - now;
+
+                const minutesRemaining = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const hoursRemaining = Math.floor(timeRemaining / (1000 * 60 * 60));
+
+                let countdownText = hoursRemaining + " hours " + minutesRemaining + " minutes until landing";
+
+                if (timeRemaining < 0) {{
+                    countdownText = "Flight has landed";
+                }}
+
                 document.getElementById("popup").style.display = "block";
-                document.getElementById("flight-info").innerHTML = '<a href="' + flightradarLink + '" target="_blank">Flight: ' + flight + '</a>';
+                document.getElementById("flight-info").innerHTML = `
+                    <p>Click for radar:</p>
+                    <a href="${{flightradarLink}}" target="_blank">Flight: ${flight}</a>
+                    <p>${{countdownText}}</p>`;
             }}
 
             function closePopup() {{
@@ -140,7 +156,7 @@ if response.status_code == 200:
             # Generate Flightradar link for flights using the same flight number
             flightradar_link = generate_flightradar_link(flight_number)
 
-            row_click = f"onclick=\"showPopup('{flight_number}', '{flightradar_link}')\""
+            row_click = f"onclick=\"showPopup('{flight_number}', '{flightradar_link}', '{eta_time}')\""
 
             # Insert yellow line when the day changes
             if previous_date and sched_date != previous_date:
