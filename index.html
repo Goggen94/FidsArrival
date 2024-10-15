@@ -39,9 +39,9 @@
             @media only screen and (max-width: 600px) { #popup { width: 75%;  /* Adjusted for mobile */ padding: 8px; } }
         </style>
         <script>
-            function showPopup(flight, flightradarLink, eta) {
+            function showPopup(flight, flightradarLink, eta, fallbackTime) {
                 const now = new Date().getTime();
-                const etaTime = new Date(eta).getTime();
+                const etaTime = eta ? new Date(eta).getTime() : new Date(fallbackTime).getTime();
                 const timeRemaining = etaTime - now;
 
                 const minutesRemaining = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
@@ -55,8 +55,7 @@
 
                 document.getElementById("popup").style.display = "block";
                 document.getElementById("flight-info").innerHTML = `
-                    <p>Click for radar:</p>
-                    <a href="` + flightradarLink + `" target="_blank">Flight: ` + flight + `</a>
+                    <a href="` + flightradarLink + `" target="_blank">Radar -> Flight: ` + flight + `</a>
                     <p>` + countdownText + `</p>`;
             }
 
@@ -70,7 +69,7 @@
             <h2>KEF Airport Arrivals</h2>
             <a href="https://dep.paxnotes.com" id="departures-btn">Departures</a>
         </div>
-        <div id="last-updated">Last updated: 11:39</div>
+        <div id="last-updated">Last updated: 11:42</div>
         <table>
             <tr>
                 <th>Flight</th>
@@ -84,7 +83,7 @@
                 <th>Gate</th>
             </tr>
     
-                <tr onclick="showPopup('OG591', 'https://www.flightradar24.com/OG591', '2024-10-15T14:40:00Z')">
+                <tr onclick="showPopup('OG591', 'https://www.flightradar24.com/OG591', '2024-10-15 14:40:00', '2024-10-15 13:20:00')">
                     <td>OG591</td>
                     <td>TFPPD</td>
                     <td>Athens Eleftherios</td>
@@ -96,7 +95,7 @@
                     <td>C21</td>
                 </tr>
             
-                <tr onclick="showPopup('OG801', 'https://www.flightradar24.com/OG801', '2024-10-15T13:29:00Z')">
+                <tr onclick="showPopup('OG801', 'https://www.flightradar24.com/OG801', '2024-10-15 13:29:00', '2024-10-15 13:45:00')">
                     <td>OG801</td>
                     <td>TFPPC</td>
                     <td>London Stansted</td>
@@ -108,7 +107,7 @@
                     <td>D34</td>
                 </tr>
             
-                <tr onclick="showPopup('OG731', 'https://www.flightradar24.com/OG731', '2024-10-15T13:55:00Z')">
+                <tr onclick="showPopup('OG731', 'https://www.flightradar24.com/OG731', '2024-10-15 13:55:00', '2024-10-15 13:50:00')">
                     <td>OG731</td>
                     <td>TFPPA</td>
                     <td>Dusseldorf</td>
@@ -120,7 +119,7 @@
                     <td>C22</td>
                 </tr>
             
-                <tr onclick="showPopup('OG461', 'https://www.flightradar24.com/OG461', '2024-10-15T13:40:00Z')">
+                <tr onclick="showPopup('OG461', 'https://www.flightradar24.com/OG461', '2024-10-15 13:40:00', '2024-10-15 13:50:00')">
                     <td>OG461</td>
                     <td>TFPLC</td>
                     <td>Amsterdam</td>
@@ -132,7 +131,7 @@
                     <td>A15</td>
                 </tr>
             
-                <tr onclick="showPopup('OG901', 'https://www.flightradar24.com/OG901', '2024-10-15T13:56:00Z')">
+                <tr onclick="showPopup('OG901', 'https://www.flightradar24.com/OG901', '2024-10-15 13:56:00', '2024-10-15 14:00:00')">
                     <td>OG901</td>
                     <td>TFPPF</td>
                     <td>Copenhagen</td>
@@ -144,7 +143,7 @@
                     <td>C23</td>
                 </tr>
             
-                <tr onclick="showPopup('OG741', 'https://www.flightradar24.com/OG741', '2024-10-15T22:50:00Z')">
+                <tr onclick="showPopup('OG741', 'https://www.flightradar24.com/OG741', '2024-10-15 22:50:00', '2024-10-15 14:00:00')">
                     <td>OG741</td>
                     <td>TFPPD</td>
                     <td>Hamburg</td>
@@ -156,19 +155,19 @@
                     <td>C23</td>
                 </tr>
             
-                <tr onclick="showPopup('OG401', 'https://www.flightradar24.com/OG401', '2024-10-15T13:54:00Z')">
+                <tr onclick="showPopup('OG401', 'https://www.flightradar24.com/OG401', '2024-10-15 13:55:00', '2024-10-15 14:05:00')">
                     <td>OG401</td>
                     <td>TFPPE</td>
                     <td>Paris CDG</td>
                     <td>14:05</td>
-                    <td>13:54</td>
+                    <td>13:55</td>
                     <td>DYNAMIC MESSAGING</td>
                     <td>8</td>
                     <td>4</td>
                     <td>C35</td>
                 </tr>
             
-                <tr onclick="showPopup('EJU3969', 'https://www.flightradar24.com/EJU3969', 'None')">
+                <tr onclick="showPopup('EJU3969', 'https://www.flightradar24.com/EJU3969', 'None', '2024-10-15 16:55:00')">
                     <td>EJU3969</td>
                     <td>OEISH</td>
                     <td>Milan</td>
@@ -180,7 +179,7 @@
                     <td>C22</td>
                 </tr>
             
-                <tr onclick="showPopup('NO2903', 'https://www.flightradar24.com/NO2903', 'None')">
+                <tr onclick="showPopup('NO2903', 'https://www.flightradar24.com/NO2903', 'None', '2024-10-15 19:20:00')">
                     <td>NO2903</td>
                     <td>EIRZE</td>
                     <td>Alicante</td>
@@ -192,7 +191,7 @@
                     <td>C23</td>
                 </tr>
             
-                <tr onclick="showPopup('W61773', 'https://www.flightradar24.com/W61773', 'None')">
+                <tr onclick="showPopup('W61773', 'https://www.flightradar24.com/W61773', 'None', '2024-10-15 20:05:00')">
                     <td>W61773</td>
                     <td>LYNVJ</td>
                     <td>Gdansk</td>
@@ -204,7 +203,7 @@
                     <td>A15</td>
                 </tr>
             
-                <tr onclick="showPopup('OG451', 'https://www.flightradar24.com/OG451', 'None')">
+                <tr onclick="showPopup('OG451', 'https://www.flightradar24.com/OG451', 'None', '2024-10-15 20:20:00')">
                     <td>OG451</td>
                     <td>TFPLA</td>
                     <td>Madeira</td>
@@ -216,7 +215,7 @@
                     <td>C34</td>
                 </tr>
             
-                <tr onclick="showPopup('OG621', 'https://www.flightradar24.com/OG621', 'None')">
+                <tr onclick="showPopup('OG621', 'https://www.flightradar24.com/OG621', 'None', '2024-10-15 22:15:00')">
                     <td>OG621</td>
                     <td>TFAEW</td>
                     <td>Tenerife South</td>
@@ -228,7 +227,7 @@
                     <td>C35</td>
                 </tr>
             
-                <tr onclick="showPopup('W61539', 'https://www.flightradar24.com/W61539', 'None')">
+                <tr onclick="showPopup('W61539', 'https://www.flightradar24.com/W61539', 'None', '2024-10-15 23:05:00')">
                     <td>W61539</td>
                     <td>HALTF</td>
                     <td>Warsaw</td>
@@ -244,7 +243,7 @@
                     <td colspan="9">Next Day Flights</td>
                 </tr>
                 
-                <tr onclick="showPopup('W42857', 'https://www.flightradar24.com/W42857', 'None')">
+                <tr onclick="showPopup('W42857', 'https://www.flightradar24.com/W42857', 'None', '2024-10-16 00:25:00')">
                     <td>W42857</td>
                     <td>HALGM</td>
                     <td>Vienna</td>
@@ -256,7 +255,7 @@
                     <td>A15</td>
                 </tr>
             
-                <tr onclick="showPopup('OG539', 'https://www.flightradar24.com/OG539', 'None')">
+                <tr onclick="showPopup('OG539', 'https://www.flightradar24.com/OG539', 'None', '2024-10-16 01:40:00')">
                     <td>OG539</td>
                     <td>TFPPA</td>
                     <td>Split</td>
@@ -268,7 +267,7 @@
                     <td>A13</td>
                 </tr>
             
-                <tr onclick="showPopup('OG605', 'https://www.flightradar24.com/OG605', 'None')">
+                <tr onclick="showPopup('OG605', 'https://www.flightradar24.com/OG605', 'None', '2024-10-16 01:40:00')">
                     <td>OG605</td>
                     <td>TFPLC</td>
                     <td>Alicante</td>
@@ -280,7 +279,7 @@
                     <td>C</td>
                 </tr>
             
-                <tr onclick="showPopup('OG202', 'https://www.flightradar24.com/OG202', 'None')">
+                <tr onclick="showPopup('OG202', 'https://www.flightradar24.com/OG202', 'None', '2024-10-16 04:35:00')">
                     <td>OG202</td>
                     <td>TFPPF</td>
                     <td>Toronto Hamilton</td>
@@ -292,7 +291,7 @@
                     <td>D32</td>
                 </tr>
             
-                <tr onclick="showPopup('OG112', 'https://www.flightradar24.com/OG112', 'None')">
+                <tr onclick="showPopup('OG112', 'https://www.flightradar24.com/OG112', 'None', '2024-10-16 04:45:00')">
                     <td>OG112</td>
                     <td>TFPPE</td>
                     <td>Boston</td>
@@ -304,7 +303,7 @@
                     <td>D21</td>
                 </tr>
             
-                <tr onclick="showPopup('OG142', 'https://www.flightradar24.com/OG142', 'None')">
+                <tr onclick="showPopup('OG142', 'https://www.flightradar24.com/OG142', 'None', '2024-10-16 04:55:00')">
                     <td>OG142</td>
                     <td>TFPPC</td>
                     <td>Washington Dulles</td>
@@ -316,7 +315,7 @@
                     <td>D15</td>
                 </tr>
             
-                <tr onclick="showPopup('DL236', 'https://www.flightradar24.com/DL236', 'None')">
+                <tr onclick="showPopup('DL236', 'https://www.flightradar24.com/DL236', 'None', '2024-10-16 06:20:00')">
                     <td>DL236</td>
                     <td></td>
                     <td>Detroit</td>
@@ -328,7 +327,7 @@
                     <td>D</td>
                 </tr>
             
-                <tr onclick="showPopup('D03998', 'https://www.flightradar24.com/D03998', 'None')">
+                <tr onclick="showPopup('D03998', 'https://www.flightradar24.com/D03998', 'None', '2024-10-16 07:15:00')">
                     <td>D03998</td>
                     <td></td>
                     <td>East Midlands</td>
@@ -340,7 +339,7 @@
                     <td></td>
                 </tr>
             
-                <tr onclick="showPopup('ED6810', 'https://www.flightradar24.com/ED6810', 'None')">
+                <tr onclick="showPopup('ED6810', 'https://www.flightradar24.com/ED6810', 'None', '2024-10-16 07:20:00')">
                     <td>ED6810</td>
                     <td></td>
                     <td>Billund</td>
@@ -352,7 +351,7 @@
                     <td></td>
                 </tr>
             
-                <tr onclick="showPopup('EZY3315', 'https://www.flightradar24.com/EZY3315', 'None')">
+                <tr onclick="showPopup('EZY3315', 'https://www.flightradar24.com/EZY3315', 'None', '2024-10-16 07:40:00')">
                     <td>EZY3315</td>
                     <td></td>
                     <td>Edinburgh</td>
@@ -364,7 +363,7 @@
                     <td>D15</td>
                 </tr>
             
-                <tr onclick="showPopup('BT169', 'https://www.flightradar24.com/BT169', 'None')">
+                <tr onclick="showPopup('BT169', 'https://www.flightradar24.com/BT169', 'None', '2024-10-16 08:05:00')">
                     <td>BT169</td>
                     <td></td>
                     <td>Riga</td>
@@ -376,7 +375,7 @@
                     <td>C23</td>
                 </tr>
             
-                <tr onclick="showPopup('EZY2635', 'https://www.flightradar24.com/EZY2635', 'None')">
+                <tr onclick="showPopup('EZY2635', 'https://www.flightradar24.com/EZY2635', 'None', '2024-10-16 08:20:00')">
                     <td>EZY2635</td>
                     <td></td>
                     <td>London Luton</td>
@@ -388,7 +387,7 @@
                     <td>D34</td>
                 </tr>
             
-                <tr onclick="showPopup('W61167', 'https://www.flightradar24.com/W61167', 'None')">
+                <tr onclick="showPopup('W61167', 'https://www.flightradar24.com/W61167', 'None', '2024-10-16 09:15:00')">
                     <td>W61167</td>
                     <td></td>
                     <td>Katowice</td>
@@ -400,7 +399,7 @@
                     <td>C33</td>
                 </tr>
             
-                <tr onclick="showPopup('LS409', 'https://www.flightradar24.com/LS409', 'None')">
+                <tr onclick="showPopup('LS409', 'https://www.flightradar24.com/LS409', 'None', '2024-10-16 09:15:00')">
                     <td>LS409</td>
                     <td></td>
                     <td>Leeds</td>
@@ -412,7 +411,7 @@
                     <td>D15</td>
                 </tr>
             
-                <tr onclick="showPopup('DL246', 'https://www.flightradar24.com/DL246', 'None')">
+                <tr onclick="showPopup('DL246', 'https://www.flightradar24.com/DL246', 'None', '2024-10-16 09:30:00')">
                     <td>DL246</td>
                     <td></td>
                     <td>New York JFK</td>
@@ -424,7 +423,7 @@
                     <td>D32</td>
                 </tr>
             
-                <tr onclick="showPopup('LS1907', 'https://www.flightradar24.com/LS1907', 'None')">
+                <tr onclick="showPopup('LS1907', 'https://www.flightradar24.com/LS1907', 'None', '2024-10-16 09:45:00')">
                     <td>LS1907</td>
                     <td></td>
                     <td>Newcastle</td>
@@ -436,7 +435,7 @@
                     <td>D23</td>
                 </tr>
             
-                <tr onclick="showPopup('EJU3969', 'https://www.flightradar24.com/EJU3969', 'None')">
+                <tr onclick="showPopup('EJU3969', 'https://www.flightradar24.com/EJU3969', 'None', '2024-10-16 09:55:00')">
                     <td>EJU3969</td>
                     <td></td>
                     <td>Milan</td>
@@ -448,7 +447,7 @@
                     <td>A13</td>
                 </tr>
             
-                <tr onclick="showPopup('BA800', 'https://www.flightradar24.com/BA800', 'None')">
+                <tr onclick="showPopup('BA800', 'https://www.flightradar24.com/BA800', 'None', '2024-10-16 10:05:00')">
                     <td>BA800</td>
                     <td></td>
                     <td>London Heathrow</td>
