@@ -2,43 +2,43 @@ name: Arrival Scraper
 
 on:
   schedule:
-    - cron: "*/5 * * * *"  # Runs every 3 minutes
+    - cron: "*/5 * * * *"  # Runs every 5 minutes
   workflow_dispatch:  # Allows manual triggering of workflow
 
 jobs:
   run-scraper:
-    runs-on: ubuntu-latest  # Use GitHub's hosted runner
+    runs-on: ubuntu-latest
 
     steps:
       # Step 1: Check out the repository
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python environment
-      - name: Set up Python and install dependencies
-        run: |
-          python3 -m venv myenv  # Create a virtual environment
-          source myenv/bin/activate  # Activate the virtual environment
-          python --version  # Check Python version
-          pip install --upgrade pip  # Upgrade pip
-          pip install -r requirements.txt  # Install dependencies
+      # Step 2: Set up Python environment and install dependencies
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'  # Replace with the desired version
 
-      # Step 3: Run the scraper script inside the virtual environment
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 3: Run the scraper script
       - name: Run scraper script
         run: |
-          source myenv/bin/activate  # Activate the virtual environment
-          python main_script.py  # Run your Python scraper
+          python main_script.py
 
-      # Step 4: Commit and push changes to the main branch
+      # Step 4: Commit and push changes to main
       - name: Commit and push changes to main
         env:
           GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git stash  # Stash any unstaged changes
-          git pull origin main --rebase  # Pull the latest changes and rebase
-          git stash pop || true  # Reapply the stashed changes (ignore error if stash was empty)
+          git pull origin main --rebase  # Pull the latest changes
           git add scraper/output/index.html  # Add the updated HTML file
           git commit -m "Update arrivals HTML file" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.Fids_Arrival }}@github.com/${{ github.repository }} HEAD:main
+
