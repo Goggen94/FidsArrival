@@ -22,7 +22,7 @@ response = requests.get(url)
 def format_time(time_str):
     try:
         dt = datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%SZ")
-        return dt.strftime("%H:%M"), dt.date()  # Return time (HH:MM) and date
+        return dt.strftime("%H:%M"), dt  # Return time (HH:MM) and datetime object
     except Exception as e:
         return "", None  # Return an empty string if there's an issue
 
@@ -85,9 +85,9 @@ if response.status_code == 200:
             @media only screen and (max-width: 600px) {{ #popup {{ width: 75%;  /* Adjusted for mobile */ padding: 8px; }} }}
         </style>
         <script>
-            function showPopup(flight, flightradarLink, eta) {{
+            function showPopup(flight, flightradarLink, eta, fallbackTime) {{
                 const now = new Date().getTime();
-                const etaTime = new Date(eta).getTime();
+                const etaTime = eta ? new Date(eta).getTime() : new Date(fallbackTime).getTime();
                 const timeRemaining = etaTime - now;
 
                 const minutesRemaining = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
@@ -101,8 +101,7 @@ if response.status_code == 200:
 
                 document.getElementById("popup").style.display = "block";
                 document.getElementById("flight-info").innerHTML = `
-                    <p>Click for radar:</p>
-                    <a href="` + flightradarLink + `" target="_blank">Flight: ` + flight + `</a>
+                    <a href="` + flightradarLink + `" target="_blank">Radar -> Flight: ` + flight + `</a>
                     <p>` + countdownText + `</p>`;
             }}
 
@@ -143,23 +142,23 @@ if response.status_code == 200:
         gate = flight.get("gate", "N/A")
 
         # Remove N/A from ETA column
-        formatted_eta_time, _ = format_time(eta_time) if eta_time != "" else ("", None)
+        formatted_eta_time, eta_datetime = format_time(eta_time) if eta_time != "" else ("", None)
+        
+        # Use STA as fallback time if ETA is not available
+        sched_time = flight.get("sched_time", "N/A")
+        formatted_sched_time, sched_datetime = format_time(sched_time)
 
         # Filter flights handled by APA and arriving to KEF
         if origin != "KEF" and handling_agent == "APA":
             origin_name = flight.get("origin", "N/A")
-            
-            # Format scheduled time (STA)
-            sched_time = flight.get("sched_time", "N/A")
-            formatted_sched_time, sched_date = format_time(sched_time)
 
             # Generate Flightradar link for flights using the same flight number
             flightradar_link = generate_flightradar_link(flight_number)
 
-            row_click = f"onclick=\"showPopup('{flight_number}', '{flightradar_link}', '{eta_time}')\""
+            row_click = f"onclick=\"showPopup('{flight_number}', '{flightradar_link}', '{eta_datetime}', '{sched_datetime}')\""
 
             # Insert yellow line when the day changes
-            if previous_date and sched_date != previous_date:
+            if previous_date and sched_datetime.date() != previous_date:
                 html_output += f"""
                 <tr id="next-day">
                     <td colspan="9">Next Day Flights</td>
@@ -180,7 +179,7 @@ if response.status_code == 200:
                 </tr>
             """
 
-            previous_date = sched_date  # Update the previous_date for next iteration
+            previous_date = sched_datetime.date()  # Update the previous_date for next iteration
 
     html_output += """
         </table>
