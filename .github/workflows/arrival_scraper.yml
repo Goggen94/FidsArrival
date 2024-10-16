@@ -23,19 +23,19 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r scraper/requirements.txt
 
       # Step 3: Run the scraper script
       - name: Run scraper script
         run: |
-          python main_script.py
+          python scraper/main_script.py
 
       # Step 4: Move the generated index.html to the root directory
       - name: Move HTML file to root
         run: |
-          mv scraper/output/index.html ./index.html  # Move index.html from scraper/output to the root
+          sudo mv scraper/output/index.html /var/www/html/arrivals/index.html  # Move index.html to the arrivals folder
 
-      # Step 5: Commit and push changes to main
+      # Step 5: Commit and push changes to main (if needed)
       - name: Commit and push changes to main
         env:
           GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}
