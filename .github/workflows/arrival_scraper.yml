@@ -20,17 +20,23 @@ jobs:
         with:
           python-version: '3.x'  # Replace with the desired version
 
-      # Step 3: Run the scraper script
+      # Step 3: Install dependencies (Optional: only if you have requirements.txt)
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt || echo "No requirements file found"
+
+      # Step 4: Run the scraper script from root directory
       - name: Run scraper script
         run: |
-          python scraper/main_script.py
+          python main_script.py
 
-      # Step 4: Move the generated index.html to the root directory
+      # Step 5: Move the generated index.html to the root directory
       - name: Move HTML file to root
         run: |
           sudo mv scraper/output/index.html /var/www/html/arrivals/index.html  # Move index.html to the arrivals folder
 
-      # Step 5: Commit and push changes to main (if needed)
+      # Step 6: Commit and push changes to main (if needed)
       - name: Commit and push changes to main
         env:
           GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}
