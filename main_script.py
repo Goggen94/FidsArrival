@@ -179,4 +179,23 @@ if response.status_code == 200:
 
         <div id="popup">
             <h3>Flight Information</h3>
-            <p id="
+            <p id="flight-info">Flight:</p>
+            <p id="close-popup" onclick="closePopup()">Close</p>
+        </div>
+    </body>
+    </html>
+    """
+
+    # Save the HTML file based on the environment
+    if os.getenv('GITHUB_ACTIONS'):
+        output_path = "scraper/output/index.html"  # For GitHub Actions
+    else:
+        output_path = "/var/www/html/arrivals/index.html"  # For the VM
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as file:
+        file.write(html_output)
+
+    print("HTML file has been generated with arriving flights handled by APA.")
+else:
+    print(f"Failed to retrieve data. Status code: {response.status_code}")
