@@ -14,30 +14,34 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python environment
+      # Step 2: Set up Python environment and install dependencies
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'  # Replace with the desired version
+          python-version: '3.x'
 
-      # Step 3: Install dependencies (Optional)
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt || echo "No requirements file found"
+          pip install -r requirements.txt
 
-      # Step 4: Run the scraper script from root directory
+      # Step 3: Run the scraper script
       - name: Run scraper script
         run: |
-          python main_script.py
+          python main_script.py  # Run main_script.py for arrivals
 
-      # Step 5: Commit and push the updated index.html file to the repository
+      # Step 4: Move the generated index.html to the /var/www/html/arrivals directory
+      - name: Move HTML file to arrivals
+        run: |
+          sudo cp scraper/output/index.html /var/www/html/arrivals/index.html  # Move index.html to /var/www/html/arrivals/
+
+      # Step 5: Commit and push changes to main
       - name: Commit and push changes to main
         env:
           GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add scraper/output/index.html
+          git add index.html  # Add the moved index.html in the root
           git commit -m "Update arrivals HTML file" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.Fids_Arrival }}@github.com/${{ github.repository }} HEAD:main
