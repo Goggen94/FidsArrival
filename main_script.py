@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 # Function to get the current time and the time 24 hours ahead
 def get_time_range():
-    now = datetime.utcnow()  # Get the current UTC time
+    now = datetime.now(timezone.utc)  # Get the current UTC time (timezone-aware)
     date_from = now.strftime("%Y-%m-%dT%H:%M:%SZ")  # Format start time as "YYYY-MM-DDTHH:MM:SSZ"
     date_to = (now + timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")  # 24 hours ahead
     return date_from, date_to
@@ -181,9 +181,12 @@ if response.status_code == 200:
     </html>
     """
 
-    # Save the HTML file to /var/www/html/arrivals/index.html
-    output_path = "/var/www/html/arrivals/index.html"
-    
+    # Save the HTML file based on the environment
+    if os.getenv('GITHUB_ACTIONS'):
+        output_path = "scraper/output/index.html"  # For GitHub Actions
+    else:
+        output_path = "/var/www/html/arrivals/index.html"  # For the VM
+
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as file:
         file.write(html_output)
