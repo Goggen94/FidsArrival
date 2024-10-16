@@ -30,18 +30,12 @@ jobs:
         run: |
           python main_script.py  # Run main_script.py for arrivals
 
-      # Step 4: Move the generated index.html to the /var/www/html/arrivals directory
-      - name: Move HTML file to arrivals
+      # Step 4: Move the generated index.html to GitHub Actions workspace for SCP to VM
+      - name: Prepare HTML file for SCP
         run: |
-          sudo cp scraper/output/index.html /var/www/html/arrivals/index.html  # Move index.html to /var/www/html/arrivals/
+          mv scraper/output/index.html ./index.html
 
-      # Step 5: Commit and push changes to main
-      - name: Commit and push changes to main
-        env:
-          GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}
+      # Step 5: SCP the HTML file to the VM
+      - name: SCP HTML file to VM
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html  # Add the moved index.html in the root
-          git commit -m "Update arrivals HTML file" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.Fids_Arrival }}@github.com/${{ github.repository }} HEAD:main
+          scp -o StrictHostKeyChecking=no index.html georg_sigurdsson1994@your-vm-ip:/var/www/html/arrivals/index.html
