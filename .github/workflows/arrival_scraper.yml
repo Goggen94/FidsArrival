@@ -14,16 +14,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python environment and install dependencies
+      # Step 2: Set up Python environment
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'  # Replace with the desired version
-
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r scraper/requirements.txt
 
       # Step 3: Run the scraper script
       - name: Run scraper script
