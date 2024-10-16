@@ -93,34 +93,45 @@ if response.status_code == 200:
             }}
         </style>
         <script>
+            let countdownInterval;  // Global variable to store the countdown interval
+
             function showPopup(flight, flightradarLink, countdownTime) {{
+                // Stop the previous countdown if one is running
+                if (countdownInterval) {{
+                    clearInterval(countdownInterval);
+                }}
+
+                // Show the popup
                 document.getElementById("popup").style.display = "block";
                 document.getElementById("flight-info").innerHTML = `<a href="` + flightradarLink + `" target="_blank">Radar -> Flight: ` + flight + `</a>`;
-                
-                var countDownDate = new Date(countdownTime).getTime();
 
-                // Update the count down every 1 second
-                var x = setInterval(function() {{
+                // Set up the countdown
+                const countdownElement = document.getElementById("countdown");
+                const endTime = new Date(countdownTime).getTime();
 
-                    var now = new Date().getTime();
-                    var distance = countDownDate - now;
-
-                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                    document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+                // Start a new countdown interval
+                countdownInterval = setInterval(function() {{
+                    const now = new Date().getTime();
+                    const distance = endTime - now;
 
                     if (distance < 0) {{
-                        clearInterval(x);
-                        document.getElementById("countdown").innerHTML = "Landed";
+                        clearInterval(countdownInterval);
+                        countdownElement.innerHTML = "Landed";  // Show 'Landed' when countdown ends
+                    }} else {{
+                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                        countdownElement.innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
                     }}
-                }}, 1000);
+                }}, 1000);  // Update countdown every second
             }}
 
             function closePopup() {{
                 document.getElementById("popup").style.display = "none";
-                clearInterval();
+                if (countdownInterval) {{
+                    clearInterval(countdownInterval);  // Stop the countdown when the popup is closed
+                }}
             }}
         </script>
     </head>
@@ -166,11 +177,11 @@ if response.status_code == 200:
         if origin != "KEF" and handling_agent == "APA":
             origin_name = flight.get("origin", "N/A")
 
-            # Determine which time to use for countdown (ETA takes precedence)
-            countdown_time = eta_datetime if eta_datetime else sched_datetime
-
             # Generate Flightradar link for flights using the same flight number
             flightradar_link = generate_flightradar_link(flight_number)
+
+            # Choose countdown time: Use ETA if available, otherwise STA
+            countdown_time = eta_time if eta_time else sched_time
 
             row_click = f"onclick=\"showPopup('{flight_number}', '{flightradar_link}', '{countdown_time}')\""
 
