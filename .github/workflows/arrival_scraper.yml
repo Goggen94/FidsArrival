@@ -1,20 +1,18 @@
-name: Arrival Scraper
+name: Arrival Scraper Deployment
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"  # Runs every 5 minutes
-  workflow_dispatch:  # Allows manual triggering of workflow
+  push:
+    branches:
+      - main  # Run workflow on push to the main branch
 
 jobs:
-  run-scraper:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
-      - name: Check out repository
+      - name: Check out the repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python environment and install dependencies
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -25,17 +23,15 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 3: Run the scraper script
-      - name: Run scraper script
+      - name: Generate arrivals HTML
         run: |
-          python main_script.py  # Run main_script.py for arrivals
+          python main_script.py
 
-      # Step 4: Move the generated index.html to GitHub Actions workspace for SCP to VM
-      - name: Prepare HTML file for SCP
-        run: |
-          mv scraper/output/index.html ./index.html
+      - name: Add SSH Key
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # Step 5: SCP the HTML file to the VM
-      - name: SCP HTML file to VM
+      - name: SCP the HTML file to the VM
         run: |
-          scp -o StrictHostKeyChecking=no index.html georg_sigurdsson1994@your-vm-ip:/var/www/html/arrivals/index.html
+          scp -o StrictHostKeyChecking=no index.html georg_sigurdsson1994@34.27.184.64:/var/www/html/arrivals/
