@@ -4,8 +4,8 @@ from datetime import datetime, timedelta, timezone
 
 # Function to get the current time and the time 24 hours ahead
 def get_time_range():
-    now = datetime.now(timezone.utc)  # Ensure the current time is UTC
-    date_from = now.strftime("%Y-%m-%dT%H:%M:%SZ")  # Correct UTC format
+    now = datetime.utcnow()  # Get the current UTC time
+    date_from = now.strftime("%Y-%m-%dT%H:%M:%SZ")  # Format start time as "YYYY-MM-DDTHH:MM:SSZ"
     date_to = (now + timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")  # 24 hours ahead
     return date_from, date_to
 
@@ -90,8 +90,7 @@ if response.status_code == 200:
         <script>
             function showPopup(flight, flightradarLink) {{
                 document.getElementById("popup").style.display = "block";
-                document.getElementById("flight-info").innerHTML = `
-                    <a href="` + flightradarLink + `" target="_blank">Radar -> Flight: ` + flight + `</a>`;
+                document.getElementById("flight-info").innerHTML = `<a href="` + flightradarLink + `" target="_blank">Radar -> Flight: ` + flight + `</a>`;
             }}
 
             function closePopup() {{
@@ -182,9 +181,9 @@ if response.status_code == 200:
     </html>
     """
 
-    # Save the HTML file to the correct path based on the environment
-    output_path = "/var/www/html/arrivals/index.html"  # For the VM
-
+    # Save the HTML file to /var/www/html/arrivals/index.html
+    output_path = "/var/www/html/arrivals/index.html"
+    
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as file:
         file.write(html_output)
