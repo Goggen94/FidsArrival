@@ -93,13 +93,34 @@ if response.status_code == 200:
             }}
         </style>
         <script>
-            function showPopup(flight, flightradarLink) {{
+            function showPopup(flight, flightradarLink, countdownTime) {{
                 document.getElementById("popup").style.display = "block";
                 document.getElementById("flight-info").innerHTML = `<a href="` + flightradarLink + `" target="_blank">Radar -> Flight: ` + flight + `</a>`;
+                
+                var countDownDate = new Date(countdownTime).getTime();
+
+                // Update the count down every 1 second
+                var x = setInterval(function() {{
+
+                    var now = new Date().getTime();
+                    var distance = countDownDate - now;
+
+                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+
+                    if (distance < 0) {{
+                        clearInterval(x);
+                        document.getElementById("countdown").innerHTML = "Landed";
+                    }}
+                }}, 1000);
             }}
 
             function closePopup() {{
                 document.getElementById("popup").style.display = "none";
+                clearInterval();
             }}
         </script>
     </head>
@@ -145,10 +166,13 @@ if response.status_code == 200:
         if origin != "KEF" and handling_agent == "APA":
             origin_name = flight.get("origin", "N/A")
 
+            # Determine which time to use for countdown (ETA takes precedence)
+            countdown_time = eta_datetime if eta_datetime else sched_datetime
+
             # Generate Flightradar link for flights using the same flight number
             flightradar_link = generate_flightradar_link(flight_number)
 
-            row_click = f"onclick=\"showPopup('{flight_number}', '{flightradar_link}')\""
+            row_click = f"onclick=\"showPopup('{flight_number}', '{flightradar_link}', '{countdown_time}')\""
 
             # Insert yellow line when the day changes
             if previous_date and sched_datetime.date() != previous_date:
@@ -180,6 +204,7 @@ if response.status_code == 200:
         <div id="popup">
             <h3>Flight Information</h3>
             <p id="flight-info">Flight:</p>
+            <p>Time Remaining: <span id="countdown"></span></p>
             <p id="close-popup" onclick="closePopup()">Close</p>
         </div>
     </body>
