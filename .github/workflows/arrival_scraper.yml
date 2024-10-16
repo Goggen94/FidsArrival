@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.x'  # Replace with the desired version
 
-      # Step 3: Install dependencies (Optional: only if you have requirements.txt)
+      # Step 3: Install dependencies (Optional)
       - name: Install dependencies
         run: |
           pip install --upgrade pip
@@ -31,18 +31,13 @@ jobs:
         run: |
           python main_script.py
 
-      # Step 5: Move the generated index.html to the root directory
-      - name: Move HTML file to root
-        run: |
-          sudo mv scraper/output/index.html /var/www/html/arrivals/index.html  # Move index.html to the arrivals folder
-
-      # Step 6: Commit and push changes to main (if needed)
+      # Step 5: Commit and push the updated index.html file to the repository
       - name: Commit and push changes to main
         env:
           GITHUB_TOKEN: ${{ secrets.Fids_Arrival }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html  # Add the moved index.html in the root
+          git add scraper/output/index.html
           git commit -m "Update arrivals HTML file" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.Fids_Arrival }}@github.com/${{ github.repository }} HEAD:main
